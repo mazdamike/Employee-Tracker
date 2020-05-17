@@ -1,0 +1,23 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "content management system for tracking employees",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mazdamike/Employee-Tracker.git"
+  },
+  "author": "Michael Powell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mazdamike/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/mazdamike/Employee-Tracker#readme",
+  "dependencies": {
+    "inquirer": "^7.1.0",
+    "mysql": "^2.18.1"
+  }
+}
