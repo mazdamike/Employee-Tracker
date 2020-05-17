@@ -19,11 +19,62 @@ var connection = mysql.createConnection({
 // connect to the mysql server and sql database
 connection.connect(function(err) {
   if (err) throw err;
-  // run the start function after the connection is made to prompt the user
   console.log("****************" + "\n" + "Employee Tracker" + "\n" + "****************");
+  // run the startEmployeeTracker function after the connection is made to prompt the user
   startEmployeeTracker();
 });
 
+// start Employee Tracker function
 function startEmployeeTracker() {
-  console.log("start program");    
+    inquirer
+    .prompt({
+      name: "action",
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        "View employees",
+        "View departments",
+        "View roles",
+        "Add employees",
+        "Add departments",
+        "Add roles",
+        "Update employee roles",
+        "Exit"
+      ]
+    })
+    .then(function(answer) {
+      switch (answer.action) {
+      case "View employees":
+        viewEmployees();
+        break;
+
+      case "View departments":
+        viewDepartments();
+        break;
+
+      case "View roles":
+        viewRoles();
+        break;
+
+      case "Add employees":
+        addEmployees();
+        break;
+
+      case "Add departments":
+        addDepartments();
+        break;
+
+      case "Add roles":
+        addRoles();
+        break;
+
+      case "Update employee roles":
+          updateRoles();
+          break;
+
+      case "Exit":
+        connection.end();
+        break;
+      }
+    });
 }
