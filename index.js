@@ -22,11 +22,11 @@ connection.connect(function(err) {
   if (err) throw err;
   console.log("****************" + "\n" + "Employee Tracker" + "\n" + "****************");
   // run the startEmployeeTracker function after the connection is made to prompt the user
-  startEmployeeTracker();
+  start();
 });
 
 // start Employee Tracker function
-function startEmployeeTracker() {
+var start = function() {
     inquirer
     .prompt({
       name: "action",
@@ -79,3 +79,6 @@ function startEmployeeTracker() {
       }
     });
 }
+
+exports.connection = connection;
+exports.start = start;
