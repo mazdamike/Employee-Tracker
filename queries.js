@@ -1,5 +1,7 @@
 var index = require("./index.js");
 var cTable = require("console.table");
+var mysql = require("mysql");
+var inquirer = require("inquirer");
 
 // View employees function
 var viewEmployees = function () {
@@ -31,11 +33,42 @@ var viewRoles = function () {
 
 // Add employees function
 var addEmployees = function () {
+
+// query the database for all roles
+index.connection.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+
+    inquirer
+    .prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "What is the new employee's first name?"
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "What is the new employee's last name?"
+      },
+      {
+        name: "role",
+        type: "list",
+        message: "What is the new employee's role?",
+        choices: function () {
+            var choiceArray = [];
+            for (var i = 0; i < res.length; i++) {
+              choiceArray.push(res[i].title);
+            }
+            return choiceArray;
+        }
+      }
+    ])
+    .then(function(answer) {
+      // when finished prompting, insert a new item into the db with that info
+      console.log("so good so far");
+    }); 
     
-
-
-
-
+}); 
 }
 
 
