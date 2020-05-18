@@ -1,50 +1,59 @@
 var index = require("./index.js");
+var cTable = require("console.table");
 
 // View employees function
 var viewEmployees = function () {
     index.connection.query("SELECT * FROM employee", function (err, res) {
         if (err) throw err;
+        console.table(res);
+        index.start();
+    });
+}
 
-        // Log all results of the SELECT statement
-        console.log(res);
+// View departments function
+var viewDepartments = function () {
+    index.connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        index.start();
+    });
+}
+
+// View roles function
+var viewRoles = function () {
+    index.connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+        console.table(res);
         index.start();
     });
 }
 
 
-// View departments function
-var viewDepartments = function () {
-    console.log("viewing departments");
-}
-
-
-// View roles function
-var viewRoles = function () {
-    console.log("viewing roles");
-}
-
-
 // Add employees function
 var addEmployees = function () {
-    console.log("adding employees");
+    
+
+
+
+
 }
 
 
 // Add departments function
 var addDepartments = function () {
-    console.log("adding departments");
+    
 }
 
 
 // Add roles function
 var addRoles = function () {
-    console.log("adding roles");
+    
 }
 
 
 // Update roles function
 var updateRoles = function () {
-    console.log("adding employees");
+    
 }
 
 
