@@ -86,27 +86,19 @@ var addEmployees = function () {
 
 // Add departments function
 var addDepartments = function () {
-
-// Query the database for all departments
-index.connection.query("SELECT * FROM department", function (err, res) {
-    if (err) throw err;
-
-    // Get info for new department to add
     inquirer
         .prompt([
             {
                 name: "deptName",
                 type: "input",
-                message: "What is the name of the department to add?",
+                message: "What is the name of the department to add?"
             }
-            
         ])
         .then(function (answer) {
-            // When finished prompting, insert a new department into the db with that info
             index.connection.query(
                 "INSERT INTO department SET ?",
                 {
-                    name: answer.deptName,
+                    name: answer.deptName
                 },
                 function (err) {
                     if (err) throw err;
@@ -116,9 +108,8 @@ index.connection.query("SELECT * FROM department", function (err, res) {
                 }
             );
         });
-});
-
 }
+
 
 
 // Add roles function
