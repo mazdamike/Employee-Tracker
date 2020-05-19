@@ -34,59 +34,102 @@ var viewRoles = function () {
 // Add employees function
 var addEmployees = function () {
 
-// query the database for all roles
-index.connection.query("SELECT * FROM role", function (err, res) {
-    if (err) throw err;
+    // Query the database for all roles
+    index.connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
 
-    inquirer
-    .prompt([
-      {
-        name: "firstName",
-        type: "input",
-        message: "What is the new employee's first name?"
-      },
-      {
-        name: "lastName",
-        type: "input",
-        message: "What is the new employee's last name?"
-      },
-      {
-        name: "role",
-        type: "list",
-        message: "What is the new employee's role?",
-        choices: function () {
-            var choiceArray = [];
-            for (var i = 0; i < res.length; i++) {
-              choiceArray.push(res[i].title);
-            }
-            return choiceArray;
-        }
-      }
-    ])
-    .then(function(answer) {
-      // when finished prompting, insert a new item into the db with that info
-      console.log("so good so far");
-    }); 
-    
-}); 
+        // Get info for new employee to add
+        inquirer
+            .prompt([
+                {
+                    name: "firstName",
+                    type: "input",
+                    message: "What is the new employee's first name?"
+                },
+                {
+                    name: "lastName",
+                    type: "input",
+                    message: "What is the new employee's last name?"
+                },
+                {
+                    name: "roleId",
+                    type: "list",
+                    message: "What is the new employee's role id?",
+                    choices: function () {
+                        var choiceArray = [];
+                        for (var i = 0; i < res.length; i++) {
+                            choiceArray.push(res[i].id);
+                        }
+                        return choiceArray;
+                    }
+                }
+            ])
+            .then(function (answer) {
+                // When finished prompting, insert a new employee into the db with that info
+                index.connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                        first_name: answer.firstName,
+                        last_name: answer.lastName,
+                        role_id: answer.roleId
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("Employee added successfully!");
+                        // Go back to start function
+                        index.start();
+                    }
+                );
+            });
+    });
 }
-
 
 // Add departments function
 var addDepartments = function () {
-    
+
+// Query the database for all departments
+index.connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+
+    // Get info for new department to add
+    inquirer
+        .prompt([
+            {
+                name: "deptName",
+                type: "input",
+                message: "What is the name of the department to add?",
+            }
+            
+        ])
+        .then(function (answer) {
+            // When finished prompting, insert a new department into the db with that info
+            index.connection.query(
+                "INSERT INTO department SET ?",
+                {
+                    name: answer.deptName,
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Department added successfully!");
+                    // Go back to start function
+                    index.start();
+                }
+            );
+        });
+});
+
 }
 
 
 // Add roles function
 var addRoles = function () {
-    
+
 }
 
 
 // Update roles function
 var updateRoles = function () {
-    
+
 }
 
 
