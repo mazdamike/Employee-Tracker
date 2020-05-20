@@ -111,16 +111,71 @@ var addDepartments = function () {
 }
 
 
-
 // Add roles function
 var addRoles = function () {
 
-}
+    // Query the database for all departments
+    index.connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
 
+        // Get info for new role to add
+        inquirer
+            .prompt([
+                {
+                    name: "roleName",
+                    type: "input",
+                    message: "What role would you like to add?"
+                },
+                {
+                    name: "salary",
+                    type: "input",
+                    message: "What is the salary for this role?",
+                    validate: function(value) {
+                        if (isNaN(value) === false) {
+                          return true;
+                        }
+                        return false;
+                    }
+                },
+                {
+                    name: "deptId",
+                    type: "list",
+                    message: "What is the new role's department id?",
+                    choices: function () {
+                        var choiceArray = [];
+                        for (var i = 0; i < res.length; i++) {
+                            choiceArray.push(res[i].id);
+                        }
+                        return choiceArray;
+                    }
+                }
+            ])
+            .then(function (answer) {
+                // When finished prompting, insert a new role into the db with that info
+                index.connection.query(
+                    "INSERT INTO role SET ?",
+                    {
+                        title: answer.roleName,
+                        salary: answer.salary,
+                        department_id: answer.deptId
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("Role added successfully!");
+                        // Go back to start function
+                        index.start();
+                    }
+                );
+            });
+    });
+}
 
 // Update roles function
 var updateRoles = function () {
 
+
+
+    
 }
 
 
