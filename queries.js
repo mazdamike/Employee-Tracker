@@ -130,9 +130,9 @@ var addRoles = function () {
                     name: "salary",
                     type: "input",
                     message: "What is the salary for this role?",
-                    validate: function(value) {
+                    validate: function (value) {
                         if (isNaN(value) === false) {
-                          return true;
+                            return true;
                         }
                         return false;
                     }
@@ -172,12 +172,56 @@ var addRoles = function () {
 
 // Update roles function
 var updateRoles = function () {
-
-
-
-    
-}
-
+    // query the database for all roles
+    index.connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+        // once you have the roles, prompt the user for the person whose role is being updated and their new role id
+        inquirer
+            .prompt([
+                {
+                    name: "employeeId",
+                    type: "input",
+                    message: "What is the employees's id?",
+                    validate: function (value) {
+                        if (isNaN(value) === false) {
+                            return true;
+                        }
+                        return false;
+                    }
+                },
+                {
+                    name: "role",
+                    type: "list",
+                    choices: function () {
+                        var roleArray = [];
+                        for (var i = 0; i < res.length; i++) {
+                            roleArray.push(res[i].id);
+                        }
+                        return roleArray;
+                    },
+                    message: "What is the id of the employee's new role?"
+                }
+            ])
+            .then(function (answer) {
+                // Update the employee table
+                index.connection.query("UPDATE employee SET ? WHERE ?",
+                    [
+                        {
+                            role_id: answer.role
+                        },
+                        {
+                            id: answer.employeeId
+                        }
+                    ],
+                    function (error) {
+                        if (error) throw err;
+                        console.log("Employee's role updated successfully!");
+                        index.start();
+                    }
+                );
+            });
+    });
+};
 
 module.exports = {
     viewEmployees: viewEmployees,
