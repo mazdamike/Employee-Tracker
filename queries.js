@@ -182,12 +182,19 @@ var updateRoles = function () {
                     name: "employeeId",
                     type: "input",
                     message: "What is the employees's id?",
+                    // Make sure the employee exists in the database
                     validate: function (value) {
-                        if (isNaN(value) === false) {
-                            return true;
+                    index.connection.query("SELECT * FROM employee", function (err, response) {
+                        if (err) throw err;
+                        for (var i = 0; i < response.length; i++) {
+                           if (chosenEmployee === res[i].id) {
+                             return true;
+                           }
+                           return false;
                         }
-                        return false;
-                    }
+                       index.connection.end();  
+                    });
+                  }
                 },
                 {
                     name: "role",
@@ -222,6 +229,23 @@ var updateRoles = function () {
             });
     });
 };
+
+var validateEmployee = function(chosenEmployee) {
+    index.connection.query("SELECT * FROM employee", function (err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+           if (chosenEmployee === res[i].id) {
+              return true;
+           }
+           return false;
+        }
+
+
+    });
+}
+
+
+
 
 module.exports = {
     viewEmployees: viewEmployees,
