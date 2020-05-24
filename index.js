@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var queries = require("./queries.js");
+const util = require("util");
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
@@ -24,6 +25,8 @@ connection.connect(function(err) {
   // run the startEmployeeTracker function after the connection is made to prompt the user
   start();
 });
+
+connection.query = util.promisify(connection.query);
 
 // start Employee Tracker function
 var start = function() {

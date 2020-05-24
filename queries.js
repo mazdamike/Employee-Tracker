@@ -2,6 +2,7 @@ var index = require("./index.js");
 var cTable = require("console.table");
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var orm = require("./orm.js");
 
 // View employees function
 var viewEmployees = function () {
@@ -171,78 +172,73 @@ var addRoles = function () {
 }
 
 // Update roles function
-var updateRoles = function () {
+const updateRoles = async function () {
     // query the database for all roles
-    index.connection.query("SELECT * FROM role", function (err, res) {
-        if (err) throw err;
-        // once you have the roles, prompt the user for the person whose role is being updated and their new role id
-        inquirer
-            .prompt([
-                {
-                    name: "employeeId",
-                    type: "input",
-                    message: "What is the employees's id?",
-                    // Make sure the employee exists in the database
-                    validate: function (value) {
-                    index.connection.query("SELECT * FROM employee", function (err, response) {
-                        if (err) throw err;
-                        for (var i = 0; i < response.length; i++) {
-                           if (chosenEmployee === res[i].id) {
-                             return true;
-                           }
-                           return false;
-                        }
-                       index.connection.end();  
-                    });
-                  }
-                },
-                {
-                    name: "role",
-                    type: "list",
-                    choices: function () {
-                        var roleArray = [];
-                        for (var i = 0; i < res.length; i++) {
-                            roleArray.push(res[i].id);
-                        }
-                        return roleArray;
-                    },
-                    message: "What is the id of the employee's new role?"
-                }
-            ])
-            .then(function (answer) {
-                // Update the employee table
-                index.connection.query("UPDATE employee SET ? WHERE ?",
-                    [
-                        {
-                            role_id: answer.role
-                        },
-                        {
-                            id: answer.employeeId
-                        }
-                    ],
-                    function (error) {
-                        if (error) throw err;
-                        console.log("Employee's role updated successfully!");
-                        index.start();
+
+    const employees = await orm.findAllEmployees() //await index.connection.query("SELECT * FROM employee");
+    const roles = await index.connection.query("SELECT * FROM role");
+    // once you have the roles, prompt the user for the person whose role is being updated and their new role id
+    inquirer
+        .prompt([
+            {
+                name: "employeeId",
+                type: "input",
+                message: "What is the employees's id?",
+                // Make sure a number is entered
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
                     }
-                );
-            });
-    });
+                    return false;
+                }
+            },
+
+            {
+                name: "role",
+                type: "list",
+                message: "What is the id of the employee's new role?",
+                choices: function () {
+                    rolesArr = []
+                    for (let i = 0; i < roles.length; i++) {
+                        rolesArr.push(roles[i].id)
+                    }
+                    return rolesArr
+                }
+            }
+        ]).then(function (answer) {
+            // Update the employee table
+            index.connection.query("UPDATE employee SET ? WHERE ?",
+                [
+                    {
+                        role_id: answer.role
+                    },
+                    {
+                        id: answer.employeeId
+                    }
+                ],
+                function (error) {
+                    if (error) throw err;
+                    console.log("Employee's role updated successfully!");
+                    index.start();
+                }
+            );
+
+        });
 };
 
-var validateEmployee = function(chosenEmployee) {
-    index.connection.query("SELECT * FROM employee", function (err, res) {
-        if (err) throw err;
-        for (var i = 0; i < res.length; i++) {
-           if (chosenEmployee === res[i].id) {
-              return true;
-           }
-           return false;
-        }
+// var validateEmployee = function (chosenEmployee) {
+//     index.connection.query("SELECT * FROM employee", function (err, res) {
+//         if (err) throw err;
+//         for (var i = 0; i < res.length; i++) {
+//             if (chosenEmployee === res[i].id) {
+//                 return true;
+//             }
+//             return false;
+//         }
 
 
-    });
-}
+//     });
+// }
 
 
 
